@@ -1,0 +1,32 @@
+import express from "express";
+require("dotenv").config();
+
+var router = express.Router();
+
+var pgp = require("pg-promise")(/* options */);
+var db = pgp(process.env.DB_CONNECT_STRING);
+
+function getList(req, res) {
+  db.any("select * from sh_wapi_list_select()", [])
+    .then(function(data) {
+      res.send(data);
+    })
+    .catch(function(error) {
+      console.log("ERROR:", error);
+    });
+}
+
+function getHeader(req, res) {
+  db.one("select * from sh_wapi_select() where _id = $1", [req.params.id])
+    .then(function(data) {
+      res.send(data);
+    })
+    .catch(function(error) {
+      console.log("ERROR:", error);
+    });
+}
+
+router.route("/").get(getList);
+router.route("/:id").get(getHeader);
+
+export default router;
