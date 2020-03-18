@@ -27,9 +27,6 @@ function getHeader(req, res) {
 }
 
 router.route("/").get(getList);
-router.get("/io", (req, res) => {
-  res.send({ response: "I am alive" }).status(200);
-});
 router.route("/:id").get(getHeader);
 
 export default router;
